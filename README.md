@@ -23,8 +23,8 @@ host = '127.0.0.1'<br>
 
 Para iniciar esse script, em um console digite<br>
 python dados_cnpj_mysql.py<br>
-ou
-python dados_cnpj_postgres.py
+ou<br>
+python dados_cnpj_postgres.py<br>
 
 A execução durou cerca de 5hs em um notebook i7 de 8a geração com Windows 10 no script para mysql.
 No caso do postgres, fiz teste só com uma amostra em Linux (Ubuntu 20.4).
@@ -32,7 +32,7 @@ No caso do postgres, fiz teste só com uma amostra em Linux (Ubuntu 20.4).
 ## Outras referências:
 
 Para trabalhar com os dados de cnpj no formato SQLITE, use o meu projeto (https://github.com/rictom/cnpj-sqlite).<br>
-A criação do arquivo sqlite é muito mais rápido que em Mysql ou Postgres.
+A criação do arquivo sqlite é muita mais rápido que o carregamento da base em Mysql ou Postgres.<br>
 O projeto (https://github.com/rictom/rede-cnpj) utiliza os dados públicos de CNPJ para visualização de relacionamentos entre empresas e sócios.<br>
 
 ## Histórico de versões
