@@ -2,7 +2,9 @@
 Script em python para carregar os arquivos de cnpj dos dados públicos da Receita Federal em MYSQL e POSTGRESQL. O código é compatível com o layout das tabelas disponibilizadas pela Receita Federal a partir de 2021.
 
 ## Dados públicos de cnpj no site da Receita:
-A partir de 2021 os dados da Receita Federal estão disponíveis no link https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj (ou http://200.152.38.155/CNPJ/) em formato csv zipado. 
+A partir de 2021 os dados da Receita Federal estão disponíveis no link https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj (ou http://200.152.38.155/CNPJ/) em formato csv zipado.<br><br>
+Se a página da Receita estiver lenta (e provavelmente vai estar), coloquei cópias dos arquivos em https://mega.nz/folder/XuhnlCpB#S51VwizfEdmWdsPCvcgerw.<br>
+
 
 ## Pré-requisitos:
 Python 3.8;<br>
