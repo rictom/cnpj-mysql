@@ -3,7 +3,7 @@ Script em python para carregar os arquivos de cnpj dos dados públicos da Receit
 
 ## Dados públicos de cnpj no site da Receita:
 A partir de 2021 os dados da Receita Federal estão disponíveis no link https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj (ou http://200.152.38.155/CNPJ/) em formato csv zipado.<br><br>
-Se a página da Receita estiver lenta (e provavelmente vai estar), coloquei cópias dos arquivos em https://mega.nz/folder/XuhnlCpB#S51VwizfEdmWdsPCvcgerw.<br>
+Se a página da Receita estiver lenta (e provavelmente vai estar), coloquei cópias dos arquivos em https://www.mediafire.com/folder/17v1gah06ir0v/cnpj.<br>
 
 
 ## Pré-requisitos:
