@@ -32,8 +32,8 @@ No caso do postgres, fiz teste só com uma amostra em Linux (Ubuntu 20.4).
 
 ## Outras referências:
 
-Para trabalhar com os dados de cnpj no formato SQLITE, use o meu projeto (https://github.com/rictom/cnpj-sqlite).<br>
-A criação do arquivo sqlite é muita mais rápido que o carregamento da base em Mysql ou Postgres.<br>
+Para trabalhar com os dados de cnpj no formato SQLITE, use o meu projeto (https://github.com/rictom/cnpj-sqlite), em que coloco um link com a base de CNPJs em sqlite já tratada.<br>
+A criação do arquivo sqlite é muita mais rápida que o carregamento da base em Mysql ou Postgres.<br>
 O projeto (https://github.com/rictom/rede-cnpj) utiliza os dados públicos de CNPJ para visualização de relacionamentos entre empresas e sócios.<br>
 
 ## Histórico de versões
