@@ -11,7 +11,7 @@ Bibliotecas pandas, dask, sqlalchemy. Para mysql instalar a biblioteca pymysql. 
 
 ## Utilizando o script:
 Baixe todos os arquivos zipados do site da Receita e salve na pasta "dados-publicos-zip".<br>
-O download no site da Receita é lento, pode demorar várias horas. Sugiro utilizar um gerenciador de downloads.<br><br>
+<s>O download no site da Receita é lento, pode demorar várias horas.</s> Sugiro utilizar um gerenciador de downloads.<br><br>
 Obtenha uma relação dos arquivos disponíveis pelo comando python dados_cnpj_lista_url.py<br>
 Crie uma pasta com o nome "dados-publicos".<br>
 
