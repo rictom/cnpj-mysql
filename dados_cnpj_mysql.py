@@ -33,7 +33,7 @@ host = '127.0.0.1'
 
 pasta_compactados = r"dados-publicos-zip"
 pasta_saida = r"dados-publicos" #esta pasta deve estar vazia. 
-dataReferencia = 'dd/mm/2021' #input('Data de referência da base dd/mm/aaaa: ')
+dataReferencia = 'dd/mm/2023' #input('Data de referência da base dd/mm/aaaa: ')
 
 resp = input(f'Isto irá CRIAR TABELAS ou REESCREVER TABELAS no database {dbname.upper()} no servidor {tipo_banco} {host} e MODIFICAR a pasta {pasta_saida}. Deseja prosseguir? (S/N)?')
 if not resp or resp.upper()!='S':
@@ -65,9 +65,9 @@ for arq in arquivos_a_zipar:
         zip_ref.extractall(pasta_saida)
         
 #%%
-tipos = ['.EMPRECSV', '.ESTABELE', '.SOCIOCSV']
+#tipos = ['.EMPRECSV', '.ESTABELE', '.SOCIOCSV']
 
-arquivos_emprescsv = list(glob.glob(os.path.join(pasta_saida, '*' + tipos[0])))
+#arquivos_emprescsv = list(glob.glob(os.path.join(pasta_saida, '*' + tipos[0])))
 
 
 sqlTabelas = '''
@@ -188,6 +188,24 @@ for k, sql in enumerate(sqlTabelas.split(';')):
     engine.execute(sql)
     print('fim parcial...', time.asctime())
 print('fim sqlTabelas...', time.asctime())
+
+#%%
+
+def carregaTabelaCodigo(extensaoArquivo, nomeTabela):
+    arquivo = list(glob.glob(os.path.join(pasta_saida, '*' + extensaoArquivo)))[0]
+    print('carregando tabela '+arquivo)
+    dtab = pd.read_csv(arquivo, dtype=str, sep=';', encoding='latin1', header=None, names=['codigo','descricao'])
+    #dqualificacao_socio['codigo'] = dqualificacao_socio['codigo'].apply(lambda x: str(int(x)))
+    dtab.to_sql(nomeTabela, engine, if_exists='append', index=None)
+    engine.execute(f'CREATE INDEX idx_{nomeTabela} ON {nomeTabela}(codigo);')
+
+carregaTabelaCodigo('.CNAECSV','cnae')
+carregaTabelaCodigo('.MOTICSV', 'motivo')
+carregaTabelaCodigo('.MUNICCSV', 'municipio')
+carregaTabelaCodigo('.NATJUCSV', 'natureza_juridica')
+carregaTabelaCodigo('.PAISCSV', 'pais')
+carregaTabelaCodigo('.QUALSCSV', 'qualificacao_socio')
+
 #%%
 
 colunas_estabelecimento = ['cnpj_basico','cnpj_ordem', 'cnpj_dv','matriz_filial', 
@@ -349,24 +367,7 @@ for k, sql in enumerate(sqls.split(';')):
     print('fim parcial...', time.asctime())
 print('fim sqls...', time.asctime())
                 
-#%%
-
-def carregaTabelaCodigo(extensaoArquivo, nomeTabela):
-    arquivo = list(glob.glob(os.path.join(pasta_saida, '*' + extensaoArquivo)))[0]
-    print('carregando tabela '+arquivo)
-    dtab = pd.read_csv(arquivo, dtype=str, sep=';', encoding='latin1', header=None, names=['codigo','descricao'])
-    #dqualificacao_socio['codigo'] = dqualificacao_socio['codigo'].apply(lambda x: str(int(x)))
-    dtab.to_sql(nomeTabela, engine, if_exists='append', index=None)
-    engine.execute(f'CREATE INDEX idx_{nomeTabela} ON {nomeTabela}(codigo);')
-
-carregaTabelaCodigo('.CNAECSV','cnae')
-carregaTabelaCodigo('.MOTICSV', 'motivo')
-carregaTabelaCodigo('.MUNICCSV', 'municipio')
-carregaTabelaCodigo('.NATJUCSV', 'natureza_juridica')
-carregaTabelaCodigo('.PAISCSV', 'pais')
-carregaTabelaCodigo('.QUALSCSV', 'qualificacao_socio')
-
-#inserir na tabela referencia_
+#%% inserir na tabela referencia_
 
 qtde_cnpjs = engine.execute('select count(*) as contagem from estabelecimento;').fetchone()[0]
 
