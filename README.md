@@ -8,10 +8,10 @@ Os arquivos csv zipados com os dados de CNPJs estão disponíveis em https://dad
 ## Pré-requisitos:
 Python 3.8;<br>
 Bibliotecas pandas, dask, sqlalchemy. Para mysql instalar a biblioteca pymysql. Para postgres usar psycopg2.<br>
-Para instalar a biblioteca, use o comando
-pip install pymysql
-Para postgres, instale psycopg2 (recomenda-se psycopg2-binary para instalação mais simples)
-pip install psycopg2-binary (testado no Ubuntu).
+Para instalar a biblioteca, use o comando<br>
+pip install pymysql<br>
+Para postgres, instale psycopg2 (recomenda-se psycopg2-binary para instalação mais simples)<br>
+pip install psycopg2-binary (testado no Ubuntu).<br>
 
 ## Utilizando o script:
 Baixe todos os arquivos zipados do site da Receita e salve na pasta "dados-publicos-zip".<br>
