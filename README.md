@@ -14,10 +14,15 @@ Para postgres, instale psycopg2 (recomenda-se psycopg2-binary para instalação 
 pip install psycopg2-binary (testado no Ubuntu).<br>
 
 ## Utilizando o script:
-Baixe todos os arquivos zipados do site da Receita e salve na pasta "dados-publicos-zip".<br>
-<s>O download no site da Receita é lento, pode demorar várias horas.</s> Sugiro utilizar um gerenciador de downloads.<br><br>
-Obtenha uma relação dos arquivos disponíveis pelo comando python dados_cnpj_lista_url.py<br>
-Crie uma pasta com o nome "dados-publicos".<br>
+Obtenha uma relação dos arquivos disponíveis pelo comando no Anaconda prompt:<br>
+<b>python dados_cnpj_lista_url.py</b><br>
+
+Para baixar os arquivos, use o comando:<br>
+<b>python dados_cnpj_baixa.py</b><br><br>
+Isso copiará os arquivos para a pasta "dados-publicos-zip".<br>
+Se o download estiverm muito lento, sugiro utilizar um gerenciador de downloads.<br>
+
+Crie uma pasta com o nome "dados-publicos". Esta pasta deve estar vazia.<br>
 
 No servidor MYSQL ou POSTGRES, crie um database, por exemplo, cnpj.<br>
 Especifique os parâmetros no começo do script:<br>
