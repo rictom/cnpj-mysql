@@ -38,6 +38,8 @@ python dados_cnpj_postgres.py<br>
 
 A execução durou cerca de 5hs em um notebook i7 de 8a geração com Windows 10 no script para mysql.
 No caso do postgres, fiz teste só com uma amostra em Linux (Ubuntu 20.4).
+Se a execução deste script demorar muito, uma opção é usar o projeto em https://github.com/rictom/cnpj-sqlite para gerar o arquivo em sqlite e usar uma ferramenta como o pgloader ou o DBeaver para converter depois em postgres.
+Este colega usou o pgloader com um bom desempenho: https://github.com/rictom/cnpj-mysql/issues/5
 
 ## Outras referências:
 
