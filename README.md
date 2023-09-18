@@ -43,7 +43,7 @@ Este colega usou o pgloader com um bom desempenho: https://github.com/rictom/cnp
 
 ## Outras referências:
 
-Para trabalhar com os dados de cnpj no formato SQLITE, use o meu projeto (https://github.com/rictom/cnpj-sqlite), em que coloco um link com a base de CNPJs em sqlite já tratada.<br>
+Para trabalhar com os dados de cnpj no formato SQLITE, use o meu projeto (https://github.com/rictom/cnpj-sqlite).<br>
 A criação do arquivo sqlite é muita mais rápida que o carregamento da base em Mysql ou Postgres.<br>
 O projeto (https://github.com/rictom/rede-cnpj) utiliza os dados públicos de CNPJ para visualização de relacionamentos entre empresas e sócios.<br>
 
