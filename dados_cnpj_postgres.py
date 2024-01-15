@@ -12,10 +12,15 @@ pip install mysqlclient (mysqldb). O desempenho com essa biblioteca foi similar 
 Para postgres, instale psycopg2 (recomenda-se psycopg2-binary para instalação mais simples)
 pip install psycopg2-binary (testado no Ubuntu)
 
+para evitar erro OperationalError: (pymysql.err.OperationalError) (1206, 'The total number of locks exceeds the lock table size')
+alterar mysql.ini
+[mysqld]
+innodb_buffer_pool_size=1G # depends on your data and machine
 """
 #%%
 
 import pandas as pd, sqlalchemy, glob, time, dask.dataframe as dd
+from sqlalchemy import text
 import os, sys
 
 #%% DEFINA os parâmetros do servidor.
@@ -33,17 +38,21 @@ host = '127.0.0.1'
 
 pasta_compactados = r"dados-publicos-zip"
 pasta_saida = r"dados-publicos" #esta pasta deve estar vazia. 
-dataReferencia = 'dd/mm/2023' #input('Data de referência da base dd/mm/aaaa: ')
+dataReferencia = 'dd/mm/2024' #input('Data de referência da base dd/mm/aaaa: ')
 
 resp = input(f'Isto irá CRIAR TABELAS ou REESCREVER TABELAS no database {dbname.upper()} no servidor {tipo_banco} {host} e MODIFICAR a pasta {pasta_saida}. Deseja prosseguir? (S/N)?')
 if not resp or resp.upper()!='S':
     sys.exit()
 
 if tipo_banco=='mysql':
-    engine = sqlalchemy.create_engine(f'mysql+pymysql://{username}:{password}@{host}/{dbname}')
-    #engine = sqlalchemy.create_engine(f'mysql+mysqldb://{username}:{password}@{host}/{dbname}?charset=utf8')
+    #engine = sqlalchemy.create_engine(f'mysql+pymysql://{username}:{password}@{host}/{dbname}')
+    engine_ = sqlalchemy.create_engine(f'mysql+pymysql://{username}:{password}@{host}/{dbname}')
+    engine = engine_.connect()
+    engine_url = f'mysql+pymysql://{username}:{password}@{host}/{dbname}'
 elif tipo_banco=='postgres':
-    engine = sqlalchemy.create_engine(f'postgresql://{username}:{password}@{host}/{dbname}')
+    engine_ = sqlalchemy.create_engine(f'postgresql://{username}:{password}@{host}/{dbname}')
+    engine = engine_.connect()
+    engine_url = f'postgresql://{username}:{password}@{host}/{dbname}'
 else:
     print('tipo de banco de dados não informado')
     sys.exit()
@@ -65,9 +74,9 @@ for arq in arquivos_a_zipar:
         zip_ref.extractall(pasta_saida)
         
 #%%
-# tipos = ['.EMPRECSV', '.ESTABELE', '.SOCIOCSV']
+#tipos = ['.EMPRECSV', '.ESTABELE', '.SOCIOCSV']
 
-# arquivos_emprescsv = list(glob.glob(os.path.join(pasta_saida, '*' + tipos[0])))
+#arquivos_emprescsv = list(glob.glob(os.path.join(pasta_saida, '*' + tipos[0])))
 
 
 sqlTabelas = '''
@@ -185,7 +194,7 @@ for k, sql in enumerate(sqlTabelas.split(';')):
     if not sql.strip():
         continue
     print('-'*20 + f'\nexecutando parte {k}:\n', sql)
-    engine.execute(sql)
+    engine.execute(text(sql))
     print('fim parcial...', time.asctime())
 print('fim sqlTabelas...', time.asctime())
 
@@ -197,7 +206,7 @@ def carregaTabelaCodigo(extensaoArquivo, nomeTabela):
     dtab = pd.read_csv(arquivo, dtype=str, sep=';', encoding='latin1', header=None, names=['codigo','descricao'])
     #dqualificacao_socio['codigo'] = dqualificacao_socio['codigo'].apply(lambda x: str(int(x)))
     dtab.to_sql(nomeTabela, engine, if_exists='append', index=None)
-    engine.execute(f'CREATE INDEX idx_{nomeTabela} ON {nomeTabela}(codigo);')
+    engine.execute(text(f'CREATE INDEX idx_{nomeTabela} ON {nomeTabela}(codigo);'))
 
 carregaTabelaCodigo('.CNAECSV','cnae')
 carregaTabelaCodigo('.MOTICSV', 'motivo')
@@ -266,13 +275,12 @@ def carregaTipo(nome_tabela, tipo, colunas):
     for arq in arquivos:
         print(f'carregando: {arq=}')
         print('lendo csv ...', time.asctime())
-        ddf = dd.read_csv(arq, sep=';', header=None, names=colunas, #nrows=1000,
-                         encoding='latin1', dtype=str,
-                         na_filter=None)
+        ddf = dd.read_csv(arq, sep=';', header=None, names=colunas, 
+                         encoding='latin1', dtype=str, na_filter=None) #.head(n=1000) 
         #df.columns = colunas.copy()
         #engine.execute('Drop table if exists estabelecimento')
         print('to_sql...', time.asctime())
-        ddf.to_sql(nome_tabela, str(engine.url), index=None, if_exists='append', #parallel=True, #method='multi', chunksize=1000, 
+        ddf.to_sql(nome_tabela, engine_url, index=None, if_exists='append', #parallel=True, #method='multi', chunksize=1000, 
                   dtype=sqlalchemy.sql.sqltypes.String) # .TEXT)
         print('fim parcial...', time.asctime())
 
@@ -363,21 +371,25 @@ for k, sql in enumerate(sqls.split(';')):
     if not sql.strip():
         continue
     print('-'*20 + f'\nexecutando parte {k}:\n', sql)
-    engine.execute(sql)
+    engine.execute(text(sql))
     print('fim parcial...', time.asctime())
 print('fim sqls...', time.asctime())
                 
 #%% inserir na tabela referencia_
 
-qtde_cnpjs = engine.execute('select count(*) as contagem from estabelecimento;').fetchone()[0]
+qtde_cnpjs = engine.execute(text('select count(*) as contagem from estabelecimento;')).fetchone()[0]
 
-engine.execute(f"insert into _referencia (referencia, valor) values ('CNPJ', '{dataReferencia}')")
-engine.execute(f"insert into _referencia (referencia, valor) values ('cnpj_qtde', '{qtde_cnpjs}')")
+engine.execute(text(f"insert into _referencia (referencia, valor) values ('CNPJ', '{dataReferencia}')"))
+engine.execute(text(f"insert into _referencia (referencia, valor) values ('cnpj_qtde', '{qtde_cnpjs}')"))
 
 print('-'*20)
 print(f'As tabelas foram criadas no servidor {tipo_banco}.')
-print('Qtde de empresas (matrizes):', engine.execute('SELECT COUNT(*) FROM empresas').fetchone()[0])
-print('Qtde de estabelecimentos (matrizes e fiiais):', engine.execute('SELECT COUNT(*) FROM estabelecimento').fetchone()[0])
-print('Qtde de sócios:', engine.execute('SELECT COUNT(*) FROM socios').fetchone()[0])
+print('Qtde de empresas (matrizes):', engine.execute(text('SELECT COUNT(*) FROM empresas')).fetchone()[0])
+print('Qtde de estabelecimentos (matrizes e fiiais):', engine.execute(text('SELECT COUNT(*) FROM estabelecimento')).fetchone()[0])
+print('Qtde de sócios:', engine.execute(text('SELECT COUNT(*) FROM socios')).fetchone()[0])
+
+engine.commit()
+engine.close()
 
 print('FIM!!!', time.asctime())
+
