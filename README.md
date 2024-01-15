@@ -48,6 +48,9 @@ A criação do arquivo sqlite é muita mais rápida que o carregamento da base e
 O projeto (https://github.com/rictom/rede-cnpj) utiliza os dados públicos de CNPJ para visualização de relacionamentos entre empresas e sócios.<br>
 
 ## Histórico de versões
+versão 0.2 (janeiro/2022)
+- aceita sqlalchemy>=2.0;
+  
 versão 0.2 (julho/2022)
 - alterações menores no sql, para funcionar também em postgres;
 - versão para postgres.
