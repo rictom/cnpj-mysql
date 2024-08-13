@@ -1,5 +1,6 @@
 beautifulsoup4
 dask
+dask-expr
 pandas
 requests
 SQLAlchemy
