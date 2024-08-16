@@ -1,6 +1,8 @@
 beautifulsoup4
 dask
+dask-expr
 pandas
 requests
 SQLAlchemy
 wget
+parfive

@@ -21,6 +21,9 @@ Para baixar os arquivos, use o comando:<br>
 <b>python dados_cnpj_baixa.py</b><br><br>
 Isso copiará os arquivos para a pasta "dados-publicos-zip".<br>
 Se o download estiverm muito lento, sugiro utilizar um gerenciador de downloads.<br>
+<b>ATENÇÃO: Em 14/8/2024 a página de dados abertos foi modificada, por isso o script dados_cnpj_baixa.py não vai pegar a base de dados mais atualizada. Altere a linha<br>
+url = 'http://200.152.38.155/CNPJ/' <br>para <br>url = 'http://200.152.38.155/CNPJ/dados_abertos_cnpj/2024-08/'</b><br>
+
 
 Crie uma pasta com o nome "dados-publicos". Esta pasta deve estar vazia.<br>
 
