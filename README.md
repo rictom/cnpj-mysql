@@ -14,16 +14,13 @@ Para postgres, instale psycopg2 (recomenda-se psycopg2-binary para instalação 
 pip install psycopg2-binary (testado no Ubuntu).<br>
 
 ## Utilizando o script:
-Obtenha uma relação dos arquivos disponíveis pelo comando no Anaconda prompt:<br>
-<b>python dados_cnpj_lista_url.py</b><br>
+Para obter relação dos arquivos disponíveis no site da Receita Federal ou baixar os arquivos, faça o seguinte comando no Anaconda prompt:<br>
+<b>python dados_cnpj_baixa.py</b><br>
+Isto irá baixar os arquivos zipados do site da Receita na pasta "dados-publicos-zip".<br><br>
 
-Para baixar os arquivos, use o comando:<br>
-<b>python dados_cnpj_baixa.py</b><br><br>
-Isso copiará os arquivos para a pasta "dados-publicos-zip".<br>
+<b>ATENÇÃO: Em 14/8/2024 a página de dados abertos foi modificada, o script dados_cnpj_baixa.py foi atualizado para pegar a pasta do mês mais recente.</b><br>
+
 Se o download estiverm muito lento, sugiro utilizar um gerenciador de downloads.<br>
-<b>ATENÇÃO: Em 14/8/2024 a página de dados abertos foi modificada, por isso o script dados_cnpj_baixa.py não vai pegar a base de dados mais atualizada. Altere a linha<br>
-url = 'http://200.152.38.155/CNPJ/' <br>para <br>url = 'http://200.152.38.155/CNPJ/dados_abertos_cnpj/2024-08/'</b><br>
-
 
 Crie uma pasta com o nome "dados-publicos". Esta pasta deve estar vazia.<br>
 
