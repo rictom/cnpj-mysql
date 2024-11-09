@@ -7,3 +7,4 @@ bs4
 SQLAlchemy
 wget
 parfive
+pymysql
