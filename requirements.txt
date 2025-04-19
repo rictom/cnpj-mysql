@@ -9,3 +9,5 @@ wget
 parfive
 pymysql
 lxml
+pyarrow
+
