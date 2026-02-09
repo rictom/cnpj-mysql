@@ -5,7 +5,7 @@ Script em python para carregar os arquivos de cnpj dos dados públicos da Receit
 
 
 ## Dados públicos de cnpj no site da Receita:
-Os arquivos csv zipados com os dados de CNPJs estão disponíveis em https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj ou https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/ (a partir de 28/10/2024.)<br>
+Os arquivos csv zipados com os dados de CNPJs estão disponíveis em https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj<br>
 
 
 ## Pré-requisitos:
@@ -17,15 +17,19 @@ Para postgres, instale psycopg2 (recomenda-se psycopg2-binary para instalação 
 pip install psycopg2-binary (testado no Ubuntu).<br>
 
 ## Utilizando o script:
+
 Para obter relação dos arquivos disponíveis no site da Receita Federal ou baixar os arquivos, faça o seguinte comando no Anaconda prompt:<br>
 <b>python dados_cnpj_baixa.py</b><br>
 Isto irá baixar os arquivos zipados do site da Receita na pasta "dados-publicos-zip".<br><br>
 
-<b>ATENÇÃO: Em 14/8/2024 a página de dados abertos foi modificada, o script dados_cnpj_baixa.py foi atualizado para pegar a pasta do mês mais recente.</b><br>
+<b>OBSERVAÇÃO</b>: Em janeiro/2026 a RFB alterou o local dos arquivos, por isso o script dados_cnpj_baixa.py parou de funcionar.<br>
+Crie uma pasta com o nome <b>"dados-publicos"</b>. Se houver arquivos antigos nesta pasta, apague ou mova-os de lugar.<br>
+Para baixar os arquivos csv, vá até a página [https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj](https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj) , procure a seção "Recursos", clique no botão "Acessar Recurso" em "Inscrições no CNPJ". <br>
+Isto levará para uma página de Download. Selecione o mês desejado e baixe os (37) arquivos: Cnaes.zip, Motivos.zip, Municipios.zip, Naturezas.zip, Paises.zip, Qualificacoes.zip, Simples.zip, Empresas0.zip, Empresas1.zip, Empresas2.zip, Empresas3.zip, Empresas4.zip, Empresas5.zip, Empresas6.zip, Empresas7.zip, Empresas8.zip, Empresas9.zip, Estabelecimentos0.zip, Estabelecimentos1.zip, Estabelecimentos2.zip, Estabelecimentos3.zip, Estabelecimentos4.zip, Estabelecimentos5.zip, Estabelecimentos6.zip, Estabelecimentos7.zip, Estabelecimentos8.zip, Estabelecimentos9.zip, Socios0.zip, Socios1.zip, Socios2.zip, Socios3.zip, Socios4.zip, Socios5.zip, Socios6.zip, Socios7.zip, Socios8.zip, Socios9.zip.<br>
+Copie os arquivos zip para a pasta "dados-publicos-zip".<br>
+O site da RFB agora permite baixar uma pasta zipada correspondente ao ANO-MÊS. Se você baixar por esta opção, descompacte o arquivo ANO-MÊS.zip, e copie os 37 arquivos zip para a pasta "dados-publicos-zip".<br>
 
-Se o download estiverm muito lento, sugiro utilizar um gerenciador de downloads.<br>
 
-Crie uma pasta com o nome "dados-publicos". Esta pasta deve estar vazia.<br>
 
 No servidor MYSQL ou POSTGRES, crie um database, por exemplo, cnpj.<br>
 Especifique os parâmetros no começo do script:<br>
