@@ -1,7 +1,7 @@
 # cnpj-mysql
 Script em python para carregar os arquivos de cnpj dos dados públicos da Receita Federal em MYSQL e POSTGRESQL. O código é compatível com o layout das tabelas disponibilizadas pela Receita Federal a partir de 2021. O código não foi gerado por IA!!!
 <br><br>
-**AVISO IMPORTANTE: Ao final de janeiro/2026, a RFB alterou o layout da página, nome e caminho dos arquivos, por isso o script que baixa os arquivos zip parou de funcionar!!! Aguarde uma atualização.**<br>
+**AVISO IMPORTANTE: Ao final de janeiro/2026, a RFB alterou o layout da página, nome e caminho dos arquivos, por isso o script que baixa os arquivos zip parou de funcionar!!! Baixe os arquivos zip manualmente e aguarde uma atualização.**<br>
 
 
 ## Dados públicos de cnpj no site da Receita:
