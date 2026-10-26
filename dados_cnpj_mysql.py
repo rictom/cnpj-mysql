@@ -280,7 +280,7 @@ def carregaTipo(nome_tabela, tipo, colunas):
         print(f'carregando: {arq=}')
         print('lendo csv ...', time.asctime())
         ddf = dd.read_csv(arq, sep=';', header=None, names=colunas, 
-                         encoding='latin1', dtype=str, na_filter=None) #.head(n=1000) 
+                         encoding='latin1', dtype=str, na_filter=False) #.head(n=1000) 
         #df.columns = colunas.copy()
         #engine.execute('Drop table if exists estabelecimento')
         print('to_sql...', time.asctime())
