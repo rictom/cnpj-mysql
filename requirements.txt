@@ -10,4 +10,5 @@ parfive
 pymysql
 lxml
 pyarrow
+python-dotenv
 
