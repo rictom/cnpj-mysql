@@ -22,25 +22,25 @@ innodb_buffer_pool_size=1G # depends on your data and machine
 import pandas as pd, sqlalchemy, glob, time, dask.dataframe as dd
 from sqlalchemy import text
 import os, sys
+from urllib.parse import quote_plus
+from dotenv import load_dotenv
+load_dotenv()  # Carrega variáveis de ambiente do arquivo .env
 
-#%% DEFINA os parâmetros do servidor.
-# tipo_banco= 'mysql'
-# dbname = 'cnpj'
-# username = 'root'
-# password = ''
-# host = '127.0.0.1'
-
-tipo_banco = 'postgres'
-dbname = 'cnpj'
-username = 'postgres'
-password = 'senha'
-host = '127.0.0.1'
+#%% Parâmetros do servidor: edite os valores padrão abaixo ou crie um arquivo .env
+# (veja .env.example). As variáveis do .env têm prioridade.
+tipo_banco = os.getenv('TIPO_BANCO', 'postgres') # 'mysql' ou 'postgres'
+dbname = os.getenv('DBNAME', 'cnpj')
+username = os.getenv('USR', 'postgres')
+password = os.getenv('PASSWORD', 'senha')
+host = os.getenv('HOST', '127.0.0.1')
+# schema do postgres onde as tabelas serão criadas. No mysql não se aplica (None).
+schema = os.getenv('SCHEMA') or (None if tipo_banco=='mysql' else 'public')
 
 pasta_compactados = r"dados-publicos-zip"
 pasta_saida = r"dados-publicos" #esta pasta deve estar vazia. 
 dataReferencia = 'dd/mm/2024' #input('Data de referência da base dd/mm/aaaa: ')
 
-resp = input(f'Isto irá CRIAR TABELAS ou REESCREVER TABELAS no database {dbname.upper()} no servidor {tipo_banco} {host} e MODIFICAR a pasta {pasta_saida}. Deseja prosseguir? (S/N)?')
+resp = input(f'Isto irá CRIAR TABELAS ou REESCREVER TABELAS no schema {schema} do database {dbname.upper()} no servidor {tipo_banco} {host} e MODIFICAR a pasta {pasta_saida}. Deseja prosseguir? (S/N)?')
 if not resp or resp.upper()!='S':
     sys.exit()
 
@@ -50,9 +50,12 @@ if tipo_banco=='mysql':
     engine = engine_.connect()
     engine_url = f'mysql+pymysql://{username}:{password}@{host}/{dbname}'
 elif tipo_banco=='postgres':
-    engine_ = sqlalchemy.create_engine(f'postgresql://{username}:{password}@{host}/{dbname}')
+    # search_path garante que CREATE/DROP TABLE e índices sem prefixo caiam no schema do .env
+    search_path_option = quote_plus(f'-c search_path={schema}')
+    engine_url = f'postgresql://{username}:{password}@{host}/{dbname}?options={search_path_option}'
+    engine_ = sqlalchemy.create_engine(engine_url, pool_pre_ping=True)
     engine = engine_.connect()
-    engine_url = f'postgresql://{username}:{password}@{host}/{dbname}'
+    # engine.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{schema}"'))
 else:
     print('tipo de banco de dados não informado')
     sys.exit()
@@ -209,7 +212,7 @@ def carregaTabelaCodigo(extensaoArquivo, nomeTabela):
     print('carregando tabela '+arquivo)
     dtab = pd.read_csv(arquivo, dtype=str, sep=';', encoding='latin1', header=None, names=['codigo','descricao'])
     #dqualificacao_socio['codigo'] = dqualificacao_socio['codigo'].apply(lambda x: str(int(x)))
-    dtab.to_sql(nomeTabela, engine, if_exists='append', index=None)
+    dtab.to_sql(nomeTabela, engine, if_exists='append', index=None, schema=schema)
     engine.execute(text(f'CREATE INDEX idx_{nomeTabela} ON {nomeTabela}(codigo);'))
 
 carregaTabelaCodigo('.CNAECSV','cnae')
@@ -218,6 +221,8 @@ carregaTabelaCodigo('.MUNICCSV', 'municipio')
 carregaTabelaCodigo('.NATJUCSV', 'natureza_juridica')
 carregaTabelaCodigo('.PAISCSV', 'pais')
 carregaTabelaCodigo('.QUALSCSV', 'qualificacao_socio')
+# dask grava por conexões próprias: sem commit aqui elas não veem as tabelas e travam no lock
+engine.commit()
 
 #%%
 
@@ -284,7 +289,7 @@ def carregaTipo(nome_tabela, tipo, colunas):
         #df.columns = colunas.copy()
         #engine.execute('Drop table if exists estabelecimento')
         print('to_sql...', time.asctime())
-        ddf.to_sql(nome_tabela, engine_url, index=None, if_exists='append', #parallel=True, #method='multi', chunksize=1000, 
+        ddf.to_sql(nome_tabela, engine_url, index=None, if_exists='append', schema=schema, #parallel=True, #method='multi', chunksize=1000,
                   dtype=sqlalchemy.sql.sqltypes.String) # .TEXT)
         print('fim parcial...', time.asctime())
 
@@ -315,7 +320,7 @@ def carregaTipoPandas(nome_tabela, tipo, colunas):
         #engine.execute('Drop table if exists estabelecimento')
         print('to_sql...', time.asctime())
         df.to_sql(nome_tabela, engine, index=None, if_exists='append',method='multi',
-                  chunksize=1000, dtype=sqlalchemy.sql.sqltypes.TEXT)
+                  chunksize=1000, dtype=sqlalchemy.sql.sqltypes.TEXT, schema=schema)
         print('fim parcial...', time.asctime())
 
 
@@ -369,6 +374,10 @@ CREATE TABLE _referencia (
 	valor		VARCHAR(100)
 );
 '''
+
+# a carga pelo dask passa do idle_session_timeout (2h) e o servidor derruba a conexão parada
+engine.close()
+engine = engine_.connect()
 
 print('Inicio sqls:', time.asctime())
 for k, sql in enumerate(sqls.split(';')):

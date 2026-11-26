@@ -28,6 +28,8 @@ username = 'root'<br>
 password = ''<br>
 host = '127.0.0.1'<br>
 
+No script para postgres, os parâmetros também podem vir de um arquivo <b>.env</b> na pasta do script (veja .env.example), inclusive o <b>SCHEMA</b> onde as tabelas serão criadas.<br>
+
 Para iniciar esse script, em um console digite<br>
 <b>python dados_cnpj_mysql.py</b><br>
 ou<br>
